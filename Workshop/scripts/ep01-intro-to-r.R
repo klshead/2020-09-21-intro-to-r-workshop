@@ -245,15 +245,15 @@ class(decimal_number)
 #
 # What will happen in each of these examples?
 #
-#   num_char <- c(1, 2, 3, "a")
-#   num_logical <- c(1, 2, 3, TRUE)
-#   char_logical <- c("a", "b", "c", TRUE)
-#   tricky <- c(1, 2, 3, "4")
+#   num_char <- c(1, 2, 3, "a")              #character
+#   num_logical <- c(1, 2, 3, TRUE)          #logical
+#   char_logical <- c("a", "b", "c", TRUE)   #character
+#   tricky <- c(1, 2, 3, "4")                #character
 #
 # [Hint: use class() to check the data type of your objects]
 #
 # Can you explain why you think it happens?
-
+# items contained in "" are characters, even if they are integers,characters are a simpler form of information than logical statements, so it takes the lowest common denominator
 # --------
 # Exercise
 # --------
@@ -301,7 +301,7 @@ animals[animals %in% c("rat", "cat", "dog", "duck", "goat")]
 #
 # returns TRUE?
 #
-# Answer:
+# Answer: alphabetically four is later than five, they are not opperating as integers
 
 
 # Topic: Missing data (NA - Not Available)
@@ -323,15 +323,22 @@ heights[complete.cases(heights)]
 # Using this vector of heights in inches, create a new vector 
 # with the NAs removed.
 # 
-#   heights <- c(63, 69, 60, 65, NA, 68, 61, 70, 61, 59, 64, 69, 63, 63, NA, 72, 65, 64, 70, 63, 65)
+  heights <- c(63, 69, 60, 65, NA, 68, 61, 70, 61, 59, 64, 69, 63, 63, NA, 72, 65, 64, 70, 63, 65)
 #
 # Solution
 
 # Use the function median() to calculate the median of the heights vector.
 #
-# Solution
+# Solution 
+  heights <- na.omit(heights)
+  median(heights)
+  
+  median(na.omit(heights))
 
 # Use R to figure out how many people in the set are taller than 67 inches.
 #
 # [Hint: R has a builtin function called length() that tells you 
 # how many values are in a vector
+  
+# Solution
+  
