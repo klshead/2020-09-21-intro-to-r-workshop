@@ -83,26 +83,29 @@ surveys[1,6]
 surveys[, 1]
 
 # first column of the data frame (as a data frame)
-
+surveys[1]
 
 # first row (as a data frame)
-
+surveys[1, ]    #can't do it as a vector, bc there are many data types
 
 # first three elements in the 7th column (as a vector)
-
+surveys[1:3, 7]
 
 # the 3rd row of the data frame (as a data.frame)
-
+surveys[3, ]
 
 # equivalent to head(metadata)
-
+surveys[1:6, ]
 
 # looking at the 1:6 more closely
-
+1:6     # 1 2 3 4 5 6
+surveys[c(1, 2, 3, 4, 5, 6), ]
+surveys[ c(2,4,5), ]
 
 # we also use other objects to specify the range
-
-
+rows <- 6
+surveys[1:6, 3]
+surveys[1:rows, 3]
 
 #
 # Challenge: Using slicing, see if you can produce the same result as:
@@ -112,30 +115,47 @@ surveys[, 1]
 # i.e., print just last 6 rows of the surveys dataframe
 #
 # Solution:
-
-
+surveys[34781:34786, ]
+nrow(surveys)
+a <- nrow(surveys)-5
+surveys[a:nrow(surveys), ]
+#or
+surveys[(nrow(surveys)-5):nrow(surveys), ]
 
 # We can omit (leave out) columns using '-'
-
-
+surveys[-1]
+surveys[-1, -2, -3]
+head(surveys[c(-1, -2, -3)])
+head(surveys[ -(1:3)])
 
 # column "names" can be used in place of the column numbers
-
+surveys["month"]
 
 
 #
 # Topic: Factors (for categorical data)
-#
-
+# 
+sex <- factor( c("male", "male", "female"))
+levels(sex)
+nlevels(sex)
 
 # factors have an order
-
+temperature <- factor( c("hot", "cold", "cold", "warm"))
+temperature[1]   #levels are put in alphabetical order
+    # you can set the order of the levels
+temperature <- factor( c("hot", "cold", "cold", "warm"), 
+                       level= c("cold", "warm", "hot") )
+levels(temperature)
 
 # Converting factors
-
+as.numeric(temperature)
+as.character(temperature)
 
 # can be tricky if the levels are numbers
-
+year <- factor( c(1990, 1983, 1977, 1998, 1990))
+as.numeric(year)
+as.character(year)
+as.numeric(as.character(year))
 
 # so does our survey data have any factors
 
