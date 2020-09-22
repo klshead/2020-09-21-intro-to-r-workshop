@@ -158,31 +158,55 @@ as.character(year)
 as.numeric(as.character(year))
 
 # so does our survey data have any factors
-
+str(surveys)   #columns will be marked with their data type
 
 #
 # Topic:  Dealing with Dates
 #
 
 # R has a whole library for dealing with dates ...
+library(lubridate)
 
+my_date <- ymd("2015-01-01")
 
+# date 7-16-1977
 
 # R can concatenated things together using paste()
-
+paste("abc", "123", sep = "-")
+ymd( paste("2015", "01", "01", sep = "-"))   
+  # this is no longer a character string, it's a date
+        class(ymd( paste("2015", "01", "01", sep = "-")))
 
 # 'sep' indicates the character to use to separate each component
 
 
 # paste() also works for entire columns
+paste(surveys$year, surveys$month, surveys$day)
+paste(surveys$year, surveys$month, surveys$day, sep = "-")
 
+ymd(paste( surveys$year, 
+           surveys$month, 
+           surveys$day, sep = "-"))
 
 # let's save the dates in a new column of our dataframe surveys$date 
-
+#to create a new column from this combined date
+surveys$date <- ymd(paste( surveys$year, 
+                          surveys$month, 
+                          surveys$day, sep = "-"))
 
 # and ask summary() to summarise 
-
+summary(surveys)
 
 # but what about the "Warning: 129 failed to parse"
+# some data cannot be converted to a date, we have 129 NAs
+summary(surveys$date)
+missing_dates <- surveys[is.na(surveys$date), "date"]
+missing_dates <- surveys[is.na(surveys$date), 
+                         c("date", "year", "month", "day")]
+missing_dates
 
-
+# these dates are 31st of months that don't have 31 days
+#to find the references
+missing_dates <- surveys[is.na(surveys$date), 
+                         c("record_id", "year", "month", "day")]
+missing_dates
