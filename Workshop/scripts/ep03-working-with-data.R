@@ -31,29 +31,52 @@ download.file(url = "https://ndownloader.figshare.com/files/2292169",
 #------------------
 # Lets get started!
 #------------------
+install.packages("tidyverse")
+library(tidyverse)
+# dplyr and tidyr (allow you to reshape your data for plotting)
 
+# load the dataset
+surveys <- read_csv("data_raw/portal_data_joined.csv")
 
-
-
-
+# check structure
+str(surveys)
 
 #-----------------------------------
 # Selecting columns & filtering rows
 #-----------------------------------
+select(surveys, plot_id, species_id, weight)
+# you need to make sure you're using the dplyr version
 
+# if you want all columns but two
+select(surveys, -record_id, -species_id)
 
+# filter for a particular year
+filter(surveys, year == 1995)
+surveys_1995 <- filter(surveys, year == 1995)
 
-
-
-
+surveys2 <- filter(surveys, weight < 5)
+surveys_sml <- select(surveys2, species_id, sex, weight)
+surveys_sml <- select(filter(surveys, weight < 5), species_id, sex, weight)
 
 #-------
 # Pipes
 #-------
+# The pipe --> %>%
+# Shortcut is command + shift + m
+surveys %>% 
+  filter (weight < 5) %>% 
+  select(species_id, sex, weight)
 
+# This does the same thing as the section above
+surveys_sml <- surveys %>% 
+  filter (weight < 5) %>% 
+  select(species_id, sex, weight)
 
-
-
+surveys_sml2 <- surveys %>% 
+  select(species_id, sex, weight) %>% 
+  filter(weight < 5)
+# (therefore, order probably does not matter, but in general go with the first order)
+# filter before select
 
 
 #-----------
@@ -63,18 +86,28 @@ download.file(url = "https://ndownloader.figshare.com/files/2292169",
 # Using pipes, subset the ```surveys``` data to include animals collected before 1995 and 
 # retain only the columns ```year```, ```sex```, and ```weight```.
 
-
-
+surveys_challenge <- surveys %>% 
+  filter(year < 1995) %>% 
+  select(year, sex, weight) 
+# the order you put the columns in is the order they will appear in  
 
 
 #--------
 # Mutate
 #--------
+# handy to convert one column into another column without rewriting it
+surveys %>% 
+  mutate(weight_kg = weight / 1000)
+# mutate(new column = transformed column + transformation)
 
+surveys %>% 
+  mutate(weight_kg = weight / 1000,
+         weight_lb = weight_kg * 2.2)
 
-
-
-
+surveys %>% 
+  filter(!is.na(weight)) %>% 
+  mutate(weight_kg = weight / 1000) %>% 
+  head(20)
 
 #-----------
 # CHALLENGE
@@ -87,7 +120,11 @@ download.file(url = "https://ndownloader.figshare.com/files/2292169",
 
 # Hint: think about how the commands should be ordered to produce this data frame!
 
-
+surveys %>% 
+  filter(!is.na(hindfoot_length)) %>% 
+  mutate(hindfoot_cm = hindfoot_length / 10) %>% 
+  filter(hindfoot_cm < 3) %>% 
+  select(species_id, hindfoot_cm)
 
 
 
