@@ -130,6 +130,7 @@ ggplot(data = surveys_complete, mapping = aes(x = species_id, y = weight)) +
 
 yearly_counts <- surveys_complete %>% 
   count(year, genus)
+   #count result default is represented by n, to specify count(year, genus, name = "...")
 
 ggplot(data = yearly_counts, mapping = aes(x = year, y = n)) +
   geom_line()
@@ -145,4 +146,115 @@ ggplot(data = yearly_counts, mapping = aes(x = year, y = n, group = genus)) +
 ggplot(data = yearly_counts, mapping = aes(x = year, y = n, group = genus)) +
   geom_line(aes(colour = genus))
 
+# integrating the pipe operator with ggplot
+
+yearly_counts %>% 
+  ggplot(mapping = aes(x = year, y = n, colour = genus)) +
+  geom_line()
+   # this is the same as above
+
+# faceting (take one plot and split it into multiple plots)
+
+ggplot(data = yearly_counts, mapping = aes(x = year, y = n)) +
+  geom_line() +
+  facet_wrap(facets = vars(genus))
+
+yearly_sex_counts <- surveys_complete %>% 
+  count(year, genus, sex)
+
+ggplot(data = yearly_sex_counts, mapping = aes(x = year, y = n, colour = sex)) +
+  geom_line() +
+  facet_wrap(facets = vars(genus))
+
+# control number of columns
+
+ggplot(data = yearly_sex_counts, mapping = aes(x = year, y = n, colour = sex)) +
+  geom_line() +
+  facet_wrap(facets = vars(genus), ncol = 2)
+
+# can also facet by more than one variable
+
+ggplot(data = yearly_sex_counts, mapping = aes(x = year, y = n, colour = sex)) +
+  geom_line() +
+  facet_grid(rows = vars(sex), cols = vars(genus))
+
+# Challenge 9: How would you modify this code so the faceting is 
+# organised into only columns instead of only rows?
+
+ggplot(data = yearly_sex_counts, mapping = aes(x = year, y = n, colour = sex)) +
+  geom_line() +
+  facet_grid(cols = vars(genus))
+
+# Using Themes
+# there are pre-existing themes like theme_bw(), theme_classic(), theme_void(), theme_classic
+
+ggplot(data = yearly_sex_counts, mapping = aes(x = year, y = n, colour = sex)) +
+  geom_line() +
+  facet_wrap(~genus) +
+  theme_bw()
+
+# Challenge 10: Put together what you’ve learned to create a plot that depicts how the 
+# average weight of each species changes through the years.
+#
+# Hint: need to do a group_by() and summarize() to get the data before plotting
+
+yearly_weight <- surveys_complete %>% 
+  group_by(year, species_id) %>% 
+  summarise(mean_weight = mean(weight))
+
+ggplot(data = yearly_weight, mapping = aes(year, mean_weight, colour = species_id)) +
+  geom_line() +
+  theme_bw()
+  
+ggplot(data = yearly_weight, mapping = aes(year, mean_weight)) +
+  geom_line() +
+  facet_wrap(~species_id)
+  theme_bw()
+   # when it's faceted you don't need colour differentiation
+
+# customisation
+
+ggplot(data = yearly_sex_counts, mapping = aes(year, n, colour = sex)) +
+  geom_line() +
+  facet_wrap(~genus) +
+  labs(title = "Observed genera through time", 
+       x = "Year of observation", 
+       y = "Number of individuals") +
+  theme_bw()
+  
+ggplot(data = yearly_sex_counts, mapping = aes(year, n, colour = sex)) +
+  geom_line() +
+  facet_wrap(~genus) +
+  labs(title = "Observed genera through time", 
+       x = "Year of observation", 
+       y = "Number of individuals") +
+  theme_bw() +
+  theme(text = element_text(size = 16))
+    # can change just y-axis, x-axis, etc.
+    # there are packages you can install to change the font
+
+ggplot(data = yearly_sex_counts, mapping = aes(year, n, colour = sex)) +
+  geom_line() +
+  facet_wrap(~genus) +
+  labs(title = "Observed genera through time", 
+       x = "Year of observation", 
+       y = "Number of individuals") +
+  theme_bw() +
+  theme(text = element_text(size = 16), 
+        axis.text.x = element_text(colour = "blue", 
+                                   size = 12, 
+                                   angle = 90, 
+                                   hjust = 0.5),
+        axis.text.y = element_text(colour = "red",
+                                   size = 12),
+        strip.text = element_text(face = "italic"))
+
+# can set this information as a theme and use it across plots
+
+# Exporting plots
+
+ggsave("figures/my_plot.png", width = 15, height = 10)
+# can also save without the size specifications
+
+ggsave("figures/my_plot.pdf", width = 15, height = 10) 
 
